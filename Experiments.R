@@ -3,8 +3,8 @@
 ####### Set the working directory ##########
 #--------------------------------------
 
-#rm(list=ls())
-directory <- "C:/Users/avala/OneDrive/Documents/Cours ACO/M2/Stage M2/IMR Tromsö/Qualitative models/Data/R/Comparison QM_FCM"
+rm(list=ls())
+directory <- "C:/Users/avala/OneDrive/Documents/Cours ACO/M2/Stage M2/IMR TromsÃ¶/Qualitative models/Data/R/Comparison QM_FCM"
 setwd(dir = directory)
 
 
@@ -18,7 +18,7 @@ setwd(dir = directory)
 library(tidyverse)
 library(gridExtra)
 source(paste(directory,"/InferenceFCM.R",sep=''))
-#load("C:/Users/avala/OneDrive/Documents/Cours ACO/M2/Stage M2/IMR Tromsö/Qualitative models/Data/R/Comparison QM_FCM/w_mat.RData") # load the interaction matrix
+#load("C:/Users/avala/OneDrive/Documents/Cours ACO/M2/Stage M2/IMR TromsÃ¶/Qualitative models/Data/R/Comparison QM_FCM/w_mat.RData") # load the interaction matrix
 
 # C1  = c( 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0)
 # C2  = c( 0, 0, 0, 0, 1, 0, 1, 0,-1, 0,-1, 0,-1,-1, 0, 1)
@@ -62,15 +62,15 @@ colnames(w.mat) <- c("Marine Transport","Fishing", "Petroleum Activity", "Cruise
 ##Qualitative modeling
 #--------------------------------------
 
-QPress_dir <- "C:/Users/avala/OneDrive/Documents/Cours ACO/M2/Stage M2/IMR Tromsö/Qualitative models/Data/R/Marzloff/Rlib/lib"
+QPress_dir <- "C:/Users/avala/OneDrive/Documents/Cours ACO/M2/Stage M2/IMR TromsÃ¶/Qualitative models/Data/R/Marzloff/Rlib/lib"
 source(paste(QPress_dir,"/dia.r", sep=''))
 source(paste(QPress_dir,"/community.r", sep=''))
 source(paste(QPress_dir,"/tk.r", sep=''))
 source(paste(directory,"/InferenceQM.R",sep=''))
 lapply(list.files(QPress_dir), function(f) source(file.path(QPress_dir, f)) )
-#load("C:/Users/avala/OneDrive/Documents/Cours ACO/M2/Stage M2/IMR Tromsö/Qualitative models/Data/R/Comparison QM_FCM/ws.Rdata")
-#load("C:/Users/avala/OneDrive/Documents/Cours ACO/M2/Stage M2/IMR Tromsö/Qualitative models/Data/R/Comparison QM_FCM/As.Rdata")
-#load("C:/Users/avala/OneDrive/Documents/Cours ACO/M2/Stage M2/IMR Tromsö/Qualitative models/Data/R/Comparison QM_FCM/edges.Rdata")
+#load("C:/Users/avala/OneDrive/Documents/Cours ACO/M2/Stage M2/IMR TromsÃ¶/Qualitative models/Data/R/Comparison QM_FCM/ws.Rdata")
+#load("C:/Users/avala/OneDrive/Documents/Cours ACO/M2/Stage M2/IMR TromsÃ¶/Qualitative models/Data/R/Comparison QM_FCM/As.Rdata")
+#load("C:/Users/avala/OneDrive/Documents/Cours ACO/M2/Stage M2/IMR TromsÃ¶/Qualitative models/Data/R/Comparison QM_FCM/edges.Rdata")
 
 
 # labels <- c("Marine Transport",
@@ -89,7 +89,7 @@ lapply(list.files(QPress_dir), function(f) source(file.path(QPress_dir, f)) )
 #             "Supporting Service",
 #             "Cultural Service",
 #             "Provisioning Service")
-# setwd(dir = "C:/Users/avala/OneDrive/Documents/Cours ACO/M2/Stage M2/IMR Tromsö/Qualitative models/Data/R/Model Stability/S.Model")
+# setwd(dir = "C:/Users/avala/OneDrive/Documents/Cours ACO/M2/Stage M2/IMR Troms?/Qualitative models/Data/R/Model Stability/S.Model")
 # edges <- model.dia("./S.Model.dia",labels=labels)
 # edges <- enforce.limitation(edges)
 

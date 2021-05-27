@@ -1,4 +1,4 @@
-inferenceQM <- function(scenario) {
+inferenceQM <- function(scenario,As) {
   results <- 0
   for(i in 1:length(As)) {
     impact <- signum(drop(As[[i]]%*%scenario))

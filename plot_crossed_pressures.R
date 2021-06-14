@@ -3,11 +3,11 @@ plot_crossed_pressures <- function(FCM_cros_press,crossed_scenars){
 
   # Fishing x Petroleum Activity
   
-  pollution <- subset(data.frame("value" = FCM_cros_press,"vertice"=rep(colnames(interaction_matrix),length(crossed_scenars))),vertice == "Pollution")
-  area_conflict <- subset(data.frame("value" = FCM_cros_press,"vertice"=rep(colnames(interaction_matrix),length(crossed_scenars))),vertice == "Area Conflict")
-  seabirds <- subset(data.frame("value" = FCM_cros_press,"vertice"=rep(colnames(interaction_matrix),length(crossed_scenars))),vertice == "Seabirds")
-  icespecies <- subset(data.frame("value" = FCM_cros_press,"vertice"=rep(colnames(interaction_matrix),length(crossed_scenars))),vertice == "Ice Species")
-  provisioning_service <- subset(data.frame("value" = FCM_cros_press,"vertice"=rep(colnames(interaction_matrix),length(crossed_scenars))),vertice == "Provisioning Service")
+  pollution <- subset(data.frame("value" = FCM_cros_press,"vertice"=rep(colnames(interaction_matrix_S),length(crossed_scenars))),vertice == "Pollution")
+  area_conflict <- subset(data.frame("value" = FCM_cros_press,"vertice"=rep(colnames(interaction_matrix_S),length(crossed_scenars))),vertice == "Area Conflict")
+  seabirds <- subset(data.frame("value" = FCM_cros_press,"vertice"=rep(colnames(interaction_matrix_S),length(crossed_scenars))),vertice == "Seabirds")
+  icespecies <- subset(data.frame("value" = FCM_cros_press,"vertice"=rep(colnames(interaction_matrix_S),length(crossed_scenars))),vertice == "Ice Species")
+  provisioning_service <- subset(data.frame("value" = FCM_cros_press,"vertice"=rep(colnames(interaction_matrix_S),length(crossed_scenars))),vertice == "Provisioning Service")
   
   sum_up <- c(pollution$value[1],
               pollution$value[2],
@@ -48,16 +48,18 @@ plot_crossed_pressures <- function(FCM_cros_press,crossed_scenars){
                                                       "Perturbation"=sum_up,
                                                       "Scenario"=rep(c("Fg1/PA0","Fg0/PA1","Fg1/PA1","Fg-1/PA0","Fg0/PA-1","Fg-1/PA-1"),5))
   plot_results <- ggplot(crossed_pressures_Fishing_X_PetrolAct,aes(x=Impacted.vertice,y=Perturbation)) +
-                  geom_col(aes(fill=Scenario)) + 
+                  geom_col(aes(fill=Scenario),width = 0.6, position = position_nudge(x=c(0.2,0.2,-0.2,0.2,0.2,-0.2,0.2,0.2,-0.2,0.2,0.2,-0.2,0.2,0.2,-0.2,0.2,0.2,-0.2,0.2,0.2,-0.2,0.2,0.2,-0.2,0.2,0.2,-0.2,0.2,0.2,-0.2),
+                                                                                     y=c(0,0.354724914,0,-0.136967372,0,0,0,0.354724914,0,-0.136967372,0,0,0,-0.321560510,0,0.004759919,0,0,0,-0.207731522,0,0.007622376,0,0,0,0.354724914,0,-0.136967372,0,0))) +
+                  scale_fill_manual(values=c("#440154FF","#433E85FF","#2D708EFF","#1E9B8AFF","#51C56AFF","#FDE725FF"))+
                   theme(axis.text.x=element_text(angle=45))
-  
+  plot_results
   
   # same for fish X Marine Mammals
   
-  MarineMammals <- subset(data.frame("value" = FCM_cros_press,"vertice"=rep(colnames(interaction_matrix),length(crossed_scenars))),vertice == "Marine Mammals")
-  Icespecies <- subset(data.frame("value" = FCM_cros_press,"vertice"=rep(colnames(interaction_matrix),length(crossed_scenars))),vertice == "Ice Species")
-  Shellfish <- subset(data.frame("value" = FCM_cros_press,"vertice"=rep(colnames(interaction_matrix),length(crossed_scenars))),vertice == "Shellfish and Other Bottom Living Animals")
-  CulturalService <- subset(data.frame("value" = FCM_cros_press,"vertice"=rep(colnames(interaction_matrix),length(crossed_scenars))),vertice == "Cultural Service")
+  MarineMammals <- subset(data.frame("value" = FCM_cros_press,"vertice"=rep(colnames(interaction_matrix_S),length(crossed_scenars))),vertice == "Marine Mammals")
+  Icespecies <- subset(data.frame("value" = FCM_cros_press,"vertice"=rep(colnames(interaction_matrix_S),length(crossed_scenars))),vertice == "Ice Species")
+  Shellfish <- subset(data.frame("value" = FCM_cros_press,"vertice"=rep(colnames(interaction_matrix_S),length(crossed_scenars))),vertice == "Shellfish and Other Bottom Living Animals")
+  CulturalService <- subset(data.frame("value" = FCM_cros_press,"vertice"=rep(colnames(interaction_matrix_S),length(crossed_scenars))),vertice == "Cultural Service")
   
   
   sum_up_2 <- c(MarineMammals$value[7],
@@ -92,8 +94,10 @@ plot_crossed_pressures <- function(FCM_cros_press,crossed_scenars){
                                                       "Perturbation"=sum_up_2,
                                                       "Scenario"=rep(c("F1/MM0","F0/MM1","F1/MM1","F-1/MM0","F0/MM-1","F-1/MM-1"),4))
   plot_results_2 <- ggplot(crossed_pressures_Fish_X_MarineMammals,aes(x=Impacted.vertice,y=Perturbation)) +
-    geom_col(aes(fill=Scenario)) + 
+    geom_col(aes(fill=Scenario),width = 0.6, position = position_nudge(x=c(0.2,0.2,-0.2,0.2,0.2,-0.2,0.2,0.2,-0.2,0.2,0.2,-0.2,0.2,0.2,-0.2,0.2,0.2,-0.2,0.2,0.2,-0.2,0.2,0.2,-0.2),
+                                                                       y = c(0,0.12941512,0,-0.95631994,0,0,0,0.01840738,0,-0.01778739,0,0,0,-0.36886784,0,0.02039941,0,0,0,0.35991200,0,-0.11452667,0,0))) + 
+    scale_fill_manual(values=c("#440154FF","#433E85FF","#2D708EFF","#1E9B8AFF","#51C56AFF","#FDE725FF"))+
     theme(axis.text.x=element_text(angle=45))
-  
+  plot_results_2
   plot_grid(plot_results, plot_results_2, labels=c("A", "B"), ncol = 1, nrow = 2)
 }

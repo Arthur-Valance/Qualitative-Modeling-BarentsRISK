@@ -24,7 +24,6 @@ interaction_matrix_S <- read_xlsx("./METADATA.xlsx",sheet="Autoregulation_compon
 
 source("./dia.r")
 source("./community.r")
-source("./tk.r")
 source("./InferenceQM.R")
 #lapply(list.files(QPress_dir), function(f) source(file.path(QPress_dir, f)) )
 load("./ws.Rdata")
@@ -263,13 +262,13 @@ for (k in 1:28){
 
 # FCM inference on all the alternative models 
 
-inv_hidden_pattern_Models <-c()
+list_inv_hidden_pattern_Models <-c()
 FCM_Models <- c()
 tour <- 0
  for(k in 1:28){
    if (k != 25){
     inv_hidden_pattern_models <- inverse_sigmoid(inferenceFCM(rep(0,length(Models[[k]][1,])),lambda=2,h=0,Models[[k]]))
-    inv_hidden_pattern_Models <-c(inv_hidden_pattern_Models,inv_hidden_pattern_models)
+    list_inv_hidden_pattern_Models <-c(list_inv_hidden_pattern_Models,inv_hidden_pattern_models)
    
     for (i in 1:16){
     
@@ -279,7 +278,7 @@ tour <- 0
   }
    else{
      inv_hidden_pattern_models <- inverse_sigmoid(inferenceFCM(rep(0,length(Models[[k]][1,])),lambda=2,h=0,Models[[k]]))
-     inv_hidden_pattern_Models <-c(inv_hidden_pattern_Models,inv_hidden_pattern_models)
+     list_inv_hidden_pattern_Models <-c(list_inv_hidden_pattern_Models,inv_hidden_pattern_models)
      for (i in 1:10){
        
        FCM_Models <- c(FCM_Models,inverse_sigmoid(inferenceFCM(Scenarios_FCM_VS_QM[[i]],lambda=2,h=0,Models[[k]]))-inv_hidden_pattern_models)
@@ -294,20 +293,25 @@ tour <- 0
     
   }
 
+
+
 FCM_Model_25 <- FCM_Models[6145:6384] #incomplete data
 
 FCM_Models <- FCM_Models[-c(6145:6384)] #all models expect 25
 
-split_FCM_Models <- split(FCM_Models,rep(1:(length(Models)-1), each = length(interaction_matrix_S*length(Scenarios_FCM_VS_QM))))
+#Model by Model
+
+split_by_model_FCM_Models <- split(FCM_Models,rep(1:(length(Models)-1), each = length(interaction_matrix_S)*length(Scenarios_FCM_VS_QM)))
 
 source("./plot_models_comparison.R")
-Results <- list(rep(0,length(split_FCM_Models)))
+Results <- list(rep(0,length(split_by_model_FCM_Models)))
 
 for (i in 1:27){
-  Results[[i]] <- data.frame('FCM_S'= FCM_S, "FCM_Model" = split_FCM_Models[[i]], 'Scenario'=c(rep(1:16,each=length(interaction_matrix_S))), 
+  Results[[i]] <- data.frame('FCM_S'= FCM_S, "FCM_Model" = split_by_model_FCM_Models[[i]], 'Scenario'=c(rep(1:16,each=length(interaction_matrix_S))), 
                              'ImpactedVertice' = rep(colnames(interaction_matrix_S),16))
 
 }
+
 
 plot_models_comparison(Results[[1]])
 plot_models_comparison(Results[[2]])
@@ -338,41 +342,40 @@ plot_models_comparison(Results[[26]])
 plot_models_comparison(Results[[27]])
 
 library("viridis") 
-Models_comparability <- data.frame("Model"=c(1:28)[-25],"Comparabilty with the basic Model"=c(plot_models_comparison(Results[[1]]),
-                                                                  plot_models_comparison(Results[[2]]),
-                                                                  plot_models_comparison(Results[[3]]),
-                                                                  plot_models_comparison(Results[[4]]),
-                                                                  plot_models_comparison(Results[[5]]),
-                                                                  plot_models_comparison(Results[[6]]),
-                                                                  plot_models_comparison(Results[[7]]),
-                                                                  plot_models_comparison(Results[[8]]),
-                                                                  plot_models_comparison(Results[[9]]),
-                                                                  plot_models_comparison(Results[[10]]),
-                                                                  plot_models_comparison(Results[[11]]),
-                                                                  plot_models_comparison(Results[[12]]),
-                                                                  plot_models_comparison(Results[[13]]),
-                                                                  plot_models_comparison(Results[[14]]),
-                                                                  plot_models_comparison(Results[[15]]),
-                                                                  plot_models_comparison(Results[[16]]),
-                                                                  plot_models_comparison(Results[[17]]),
-                                                                  plot_models_comparison(Results[[18]]),
-                                                                  plot_models_comparison(Results[[19]]),
-                                                                  plot_models_comparison(Results[[20]]),
-                                                                  plot_models_comparison(Results[[21]]),
-                                                                  plot_models_comparison(Results[[22]]),
-                                                                  plot_models_comparison(Results[[23]]),
-                                                                  plot_models_comparison(Results[[24]]),
-                                                                  plot_models_comparison(Results[[25]]),
-                                                                  plot_models_comparison(Results[[26]]),
-                                                                  plot_models_comparison(Results[[27]])))
+Models_comparability <- data.frame("Model"=as.factor(c(1:28)[-25]),"Comparabilty with the basic Model"=map_dbl(1:27,~plot_models_comparison(Results[[.]])))
 
-plot_model_comparability <- ggplot(Models_comparability,aes(x=Model,y=Comparabilty.with.the.basic.Model))+
-                            geom_bar(stat="identity",color=Models_comparability$Comparabilty.with.the.basic.Model)
+plot_model_comparability <- ggplot(Models_comparability,aes(x=Model,y=Comparabilty.with.the.basic.Model,fill=Model))+
+                            geom_bar(stat="identity")
+
 plot_model_comparability <- plot_model_comparability  +
-                            scale_color_viridis(option = "D") +
-                            geom_text(aes(label=Comparabilty.with.the.basic.Model), vjust=1.6, color="white", size=3.5)+
+                            scale_fill_manual(values=map(1:28,function(x) viridis(28)[x]) %>% unlist)+
+                            geom_text(aes(label=Comparabilty.with.the.basic.Model), vjust=-0.5, color="black", size=3.5)+
+                            guides( fill = FALSE)+
+                            geom_hline(yintercept=50,col="firebrick4",size=2) +
                             theme_minimal()
 plot_model_comparability
 
+#Compartment by compartment 
 
+split_by_compartment_FCM_Models <- split(FCM_Models,rep(1:length(interaction_matrix_S), (length(Models)-1)*length(Scenarios_FCM_VS_QM)))
 
+perturbations <- map(1:16,~split(split_by_compartment_FCM_Models[[.]],rep(1:16,27)))%>% unlist
+
+Models_comparability_by_compartment <- tibble("Compartments"= rep(colnames(interaction_matrix_S), each = (length(Models)-1)*length(Scenarios_FCM_VS_QM)),
+                                              "Scenario"= rep(as.character(c(1:28)[-25]),(length(interaction_matrix_S))*length(Scenarios_FCM_VS_QM)),
+                                              "Model"= rep(rep(1:16, each=length(Models)-1),length(Scenarios_FCM_VS_QM)),
+                                              "Perturbation"= perturbations)
+#split(split_by_compartment_FCM_Models[[1]],rep(1:16,27))
+#split(split_by_compartment_FCM_Models[[8]],rep(1:16,27))
+#split(split_by_compartment_FCM_Models[[11]],rep(1:16,27))
+#split(split_by_compartment_FCM_Models[[12]],rep(1:16,27))
+#split(split_by_compartment_FCM_Models[[15]],rep(1:16,27))
+Models_comparability_by_compartment$Scenario <- as.factor(Models_comparability_by_compartment$Scenario)
+Models_comparability_by_compartment$Model <- as.factor(Models_comparability_by_compartment$Model)
+Models_comparability_by_compartment$Compartments <- as.factor(Models_comparability_by_compartment$Compartments)
+plot_violin_Models <- ggplot(Models_comparability_by_compartment,aes(x=Compartments,y=Perturbation))+
+                      geom_violin()+
+                      facet_wrap(ncol=4,vars(Model))+
+                      theme(axis.text.x=element_text(angle=45)) 
+
+plot_violin_Models            
